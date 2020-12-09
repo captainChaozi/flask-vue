@@ -1,0 +1,54 @@
+image: docker:latest
+
+stages:
+  - build
+  - deploy
+
+variables:
+  APP_NAME: lycra
+  IMAGE_NAME: ${APP_NAME}_api:${CI_COMMIT_REF_NAME}
+  CON_NAME: ${APP_NAME}_api_${CI_COMMIT_REF_NAME}
+
+
+build:
+  stage: build
+  retry: 2
+  tags:
+    - jbl
+  script:
+    - docker build -t ${IMAGE_NAME} .
+
+deploy-dev:
+  stage: deploy
+  retry: 2
+  tags:
+    - jbl
+  variables:
+    APP_PORT: 20202
+    DB_HOST: ${APP_NAME}_${CI_COMMIT_REF_NAME}_db
+    DB_PORT: 5432
+    REDIS_HOST: ${APP_NAME}_${CI_COMMIT_REF_NAME}_redis
+    REDIS_PORT: 6379
+  script:
+    - docker ps -a | grep -i ${CON_NAME} > /dev/null 2>&1 && docker stop ${CON_NAME} && docker rm ${CON_NAME}
+    - docker run --name ${CON_NAME} --network ${APP_NAME}_${CI_COMMIT_REF_NAME} -d -p ${APP_PORT}:8000 -e "REDIS_HOST=${REDIS_HOST}" -e "REDIS_PORT=${REDIS_PORT}" -e "DB_HOST=${DB_HOST}" -e "DB_PORT=${DB_PORT}" $IMAGE_NAME
+  only:
+    - master
+
+#deploy-dev-celery:
+#  stage: deploy
+#  retry: 2
+#  tags:
+#    - jbl
+#  variables:
+#    DB_HOST: ${APP_NAME}_${CI_COMMIT_REF_NAME}_db
+#    DB_PORT: 5432
+#    REDIS_HOST: ${APP_NAME}_${CI_COMMIT_REF_NAME}_redis
+#    REDIS_PORT: 6379
+#    CON_NAME: ${APP_NAME}_celery_${CI_COMMIT_REF_NAME}
+#    RUN: celery
+#  script:
+#    - docker ps -a | grep -i ${CON_NAME} > /dev/null 2>&1 && docker stop ${CON_NAME} && docker rm ${CON_NAME}
+#    - docker run --name ${CON_NAME} --network ${APP_NAME}_${CI_COMMIT_REF_NAME} -d  -e "RUN=${RUN}" -e "REDIS_HOST=${REDIS_HOST}" -e "REDIS_PORT=${REDIS_PORT}" -e "DB_HOST=${DB_HOST}" -e "DB_PORT=${DB_PORT}" $IMAGE_NAME
+#  only:
+#    - master
