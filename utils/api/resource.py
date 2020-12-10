@@ -1,3 +1,5 @@
+from pprint import pprint
+
 from flask_restful import Resource
 from flask import g, request
 
@@ -165,9 +167,10 @@ class ListResource(MyResource):
 
     def post(self, parent_id=None):
         schema = self.Schema()
-        data, error = schema.load(request.get_json())
-        if error:
-            abort(400, **error)
+        data = schema.load(request.get_json())
+        # if error:
+        #     abort(400, **error)
+        pprint(schema.dump_fields)
         for field in self.not_repeat_field:
             repeat = self.query.filter(getattr(self.Model, field) == data.get(field),
                                        self.Model.is_delete == 0).first()

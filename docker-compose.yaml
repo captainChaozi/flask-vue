@@ -1,0 +1,56 @@
+version: '3.1'
+
+services:
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_PASSWORD: 123456
+      PGDATA: /data
+    volumes:
+      - "/data/flask-vue-pg:/data"
+    ports:
+      - "5432:5432"
+    expose:
+      - "5432"
+    restart: always
+    container_name: flask_vue_db
+
+  redis:
+    image: redis:5.0.3
+    environment:
+      REDIS_PASSWORD: 123456
+    restart: always
+    command: [
+      "bash", "-c",
+      '
+         docker-entrypoint.sh
+         --requirepass "$$REDIS_PASSWORD"
+      '
+    ]
+    volumes:
+      - "/data/flask-vue-redis:/data"
+    expose:
+      - "6379"
+    ports:
+      - "6379:6379"
+    container_name: flask_vue_redis
+
+  api:
+    image: chaozi/python:3.8
+    command: ['python','manage.py','runserver']
+    environment:
+      REDIS_PASSWORD: 123456
+      REDIS_HOST: redis
+      REDIS_PORT: '6379'
+      REDIS_DB: 0
+      DB_URL: 'postgresql+psycopg2://postgres:chaozi@db:5432/postgres'
+    volumes:
+      - ".:/data"
+    expose:
+      - "8000"
+    ports:
+      - "8000:8000"
+    depends_on:
+      - redis
+      - db
+    container_name: flask_vue_api

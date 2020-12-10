@@ -1,9 +1,8 @@
 import decimal
-import json
+from json.encoder import JSONEncoder
 from datetime import datetime, date
 
-
-class CJsonEncoder(json.JSONEncoder):
+class CJsonEncoder(JSONEncoder):
     def default(self, obj):
         if isinstance(obj, datetime):
             return obj.strftime('%Y-%m-%d %H:%M:%S')
@@ -12,4 +11,4 @@ class CJsonEncoder(json.JSONEncoder):
         elif isinstance(obj, decimal.Decimal):
             return float(obj)
         else:
-            return json.JSONEncoder.default(self, obj)
+            return JSONEncoder.default(self, obj)

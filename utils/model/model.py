@@ -160,6 +160,13 @@ class Model(six.Iterator):
         for c in self.__table__.columns:
             d[c.name] = self[c.name]
         return d
+    @classmethod
+    def field_comments(cls):
+        d = dict()
+        for c in cls.__table__.columns:
+            if c.comment:
+                d[c.name] = c.comment
+        return d
 
 
 class ModelIterator(six.Iterator):

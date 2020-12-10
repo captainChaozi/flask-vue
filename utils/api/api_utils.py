@@ -4,7 +4,7 @@ import logging
 from marshmallow import ValidationError
 from sqlalchemy import Integer, DateTime, Date, DECIMAL, String
 from flask import abort as original_flask_abort
-from flask import request, jsonify, g
+from flask import request, jsonify, g,current_app
 from flask_restful import reqparse
 from sqlalchemy.orm import aliased
 from werkzeug.exceptions import HTTPException
@@ -233,7 +233,7 @@ def paginator(query, schema):
     pagination = query.paginate(page=int(page), per_page=int(per_page), error_out=False)
     total_number = pagination.total  # 获取总条数
     items = pagination.items  # 获取数据
-    result = schema.dump(items).data
+    result = schema.dump(items)
     return jsonify({
         'data': result,
         'paging': {'page': int(page),
@@ -254,7 +254,7 @@ def abort(http_status_code, **kwargs):
     except HTTPException as e:
         if len(kwargs):
             e.data = kwargs
-            logging.error(kwargs)
+            current_app.logger.error(kwargs)
         raise
 
 

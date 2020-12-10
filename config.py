@@ -1,5 +1,4 @@
 import os
-
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 static_dir = os.path.join(basedir, 'static')
@@ -11,7 +10,6 @@ class Config:
     # flask配置
     SECRET_KEY = os.getenv('SECRET_KEY', os.urandom(24))
     STATIC_DIR = static_dir
-
     # 微信
     WX_AUTH_URL = os.getenv('WX_AUTH_URL', '')
     WX_APP_ID = os.getenv('WX_APP_ID', '')
@@ -26,11 +24,11 @@ class Config:
     OSS_DOMAIN = os.getenv('OSS_DOMAIN', "")
 
     # sqlalchemy配置
-    user = os.getenv('DB_USER', '')
-    pwd = os.getenv('DB_PASSWORD', '')
-    host = os.getenv('DB_HOST', '')
-    port = os.getenv('DB_PORT', '')
-    db = os.getenv('DB_NAME', '')
+    user = os.getenv('DB_USER', 'postgres')
+    pwd = os.getenv('DB_PASSWORD', '123456')
+    host = os.getenv('DB_HOST', '127.0.0.1')
+    port = os.getenv('DB_PORT', '5432')
+    db = os.getenv('DB_NAME', 'postgres')
     data = dict(user=user, pwd=pwd, host=host, port=port, db=db)
     con_str = 'postgresql+psycopg2://{user}:{pwd}@{host}:{port}/{db}'
     SQLALCHEMY_DATABASE_URI = os.getenv('DB_URL') or con_str.format(**data)
@@ -39,10 +37,10 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # redis 配置
-    REDIS_HOST = os.getenv('REDIS_HOST', '')
-    REDIS_PORT = os.getenv('REDIS_PORT', '')
-    REDIS_DB = os.getenv('REDIS_DB', )
-    REDIS_PWD = os.getenv('REDIS_PWD', '')
+    REDIS_HOST = os.getenv('REDIS_HOST', '127.0.0.1')
+    REDIS_PORT = os.getenv('REDIS_PORT', '5432')
+    REDIS_DB = os.getenv('REDIS_DB', 0)
+    REDIS_PWD = os.getenv('REDIS_PWD', '123456')
     _redis_url = "redis://:{pwd}@{host}:{port}/{db}". \
         format(pwd=REDIS_PWD, host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB)
 
