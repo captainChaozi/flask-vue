@@ -12,7 +12,7 @@ class DemoItemSchema(Schema):
 class DemoSchema(Schema):
     items = fields.Nested(DemoItemSchema,many=True)
     hello = fields.Integer()
-    num = fields.Decimal(20,'5')
+    num = fields.Number()
 
 
     class Meta:

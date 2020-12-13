@@ -5,11 +5,11 @@ from app import db,MainMixIn
 class Demo(db.Model,MainMixIn):
 
 
-    name = db.Column(db.String(10),comment='名字')
+    name = db.Column(db.String(10),comment='名字',info={'eg':'张三','des':'这是名字'})
     date = db.Column(db.Date,default=datetime.date.today)
     time = db.Column(db.DateTime,default=datetime.datetime.now)
     num = db.Column(db.DECIMAL(20,4),comment="数字")
-    test = db.Column(db.String(10),nullable=False)
+    test = db.Column(db.String(10),nullable=False,info={'a':1,'b':2})
 
     @property
     def hello(self):

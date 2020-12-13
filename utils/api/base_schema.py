@@ -14,11 +14,10 @@ err_message = {
     "Missing data for required field.": "必须填写！",
     "Field may not be null.": '不能为空',
     "validator_failed": '值不合法',
-"Invalid type.":"类型不正确",
-"Not a valid list.":"不是正确的列表",
-"Not a valid string.":"请填写字符类型的值",
-    "Not a valid number.": "请填写数字类型的值",
-
+    "Invalid type.": "类型不正确",
+    "Not a valid list.": "不是正确的列表",
+    "Not a valid string.": "请填写字符类型的值",
+    "Not a valid number.": "请填写正确的数字类型的值",
 
 }
 
@@ -29,7 +28,7 @@ class BaseSchema(SQLAlchemyAutoSchema):
         comments = self.Meta.model.field_comments()
         for k, v in exc.messages.items():
             if hasattr(self.Meta, 'model') and k in comments:
-                err[comments[k]] = v
+                err[comments[k]] = [i if i not in err_message else err_message[i] for i in v]
             else:
                 err[k] = v
         if err:

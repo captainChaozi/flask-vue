@@ -170,7 +170,6 @@ class ListResource(MyResource):
         data = schema.load(request.get_json())
         # if error:
         #     abort(400, **error)
-        pprint(schema.dump_fields)
         for field in self.not_repeat_field:
             repeat = self.query.filter(getattr(self.Model, field) == data.get(field),
                                        self.Model.is_delete == 0).first()
@@ -226,9 +225,9 @@ class DetailResource(MyResource):
     def put(self, resource_id):
         resource = self.db_session.query(self.Model).filter(self.Model.id == resource_id).first()
         schema = self.Schema()
-        data, error = schema.load(request.get_json())
-        if error:
-            abort(400, **error)
+        data = schema.load(request.get_json())
+        # if error:
+        #     abort(400, **error)
         for field in self.not_repeat_field:
             repeat = self.db_session.query(self.Model).filter(getattr(self.Model, field) == data.get(field),
                                                               self.Model.is_delete == 0).first()
