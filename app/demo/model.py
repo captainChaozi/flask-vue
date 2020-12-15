@@ -1,9 +1,9 @@
 import datetime
 
 from app import db,MainMixIn
+from sqlalchemy.ext.hybrid import hybrid_property
 
 class Demo(db.Model,MainMixIn):
-
 
     name = db.Column(db.String(10),comment='名字',info={'eg':'张三','des':'这是名字'})
     date = db.Column(db.Date,default=datetime.date.today)
@@ -11,7 +11,7 @@ class Demo(db.Model,MainMixIn):
     num = db.Column(db.DECIMAL(20,4),comment="数字")
     test = db.Column(db.String(10),nullable=False,info={'a':1,'b':2})
 
-    @property
+    @hybrid_property
     def hello(self):
         return 123
 

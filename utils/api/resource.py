@@ -168,8 +168,6 @@ class ListResource(MyResource):
     def post(self, parent_id=None):
         schema = self.Schema()
         data = schema.load(request.get_json())
-        # if error:
-        #     abort(400, **error)
         for field in self.not_repeat_field:
             repeat = self.query.filter(getattr(self.Model, field) == data.get(field),
                                        self.Model.is_delete == 0).first()

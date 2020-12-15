@@ -69,7 +69,6 @@ class Model(six.Iterator):
 
     _cached_tablename = None
 
-
     def __repr__(self):
         identity = inspect(self).identity
         # print(identity)
@@ -168,6 +167,19 @@ class Model(six.Iterator):
                 d[c.name] = c.comment
         return d
 
+    @classmethod
+    def field_info(cls):
+        d = dict()
+        # for c in cls.__table__.columns:
+        #     if c.comment:
+        #         d[c.name] = {"comment":c.comment,'info':c.info}
+        # for i in
+        for k,v in cls.__dict__.items():
+            if hasattr(v,'info'):
+                print(k,v.info)
+            if hasattr(v,'doc'):
+                print(k,v,v.doc)
+        return d
 
 class ModelIterator(six.Iterator):
 
