@@ -4,7 +4,6 @@ from flask import g,current_app
 from flask_migrate import Migrate, MigrateCommand
 from flask_script import Manager, Shell, Server
 from app import create_app, db, get_session
-from utils import formatter
 
 app = create_app()
 manager = Manager(app)
@@ -44,7 +43,9 @@ def create_db():
     db.create_all()
     db.session.commit()
 
+# print(app.config)
 
 if __name__ == "__main__":
+
     manager.run()
 

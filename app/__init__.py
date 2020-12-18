@@ -1,6 +1,7 @@
 import datetime
 
 from flask import Flask
+from flask_apscheduler import APScheduler
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from sqlalchemy.dialects.postgresql import JSONB
@@ -9,13 +10,14 @@ from config import Config
 from utils import Model, RedisCache, get_user, get_group, get_tenant, get_user_name, get_group_name, generate_id, \
     formatter, CJsonEncoder
 from flask_restful import Api
-
 from flask.logging import default_handler
+
 
 db = SQLAlchemy(model_class=Model)
 redis = RedisCache()
 default_handler.setFormatter(formatter)
 ma = Marshmallow()
+apscheduler = APScheduler()
 
 
 def create_app():
@@ -25,6 +27,8 @@ def create_app():
     redis.init_app(app)
     db.init_app(app)
     ma.init_app(app)
+    apscheduler.init_app(app)
+    apscheduler.start(paused=Config.SCHEDULER_API_ENABLED)
     api = Api(app)
     from app.url_map import register
     register(api)

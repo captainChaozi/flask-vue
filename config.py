@@ -1,4 +1,7 @@
 import os
+
+from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
+
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 static_dir = os.path.join(basedir, 'static')
@@ -38,11 +41,27 @@ class Config:
 
     # redis 配置
     REDIS_HOST = os.getenv('REDIS_HOST', '127.0.0.1')
-    REDIS_PORT = os.getenv('REDIS_PORT', '5432')
+    REDIS_PORT = os.getenv('REDIS_PORT', '6379')
     REDIS_DB = os.getenv('REDIS_DB', 0)
     REDIS_PWD = os.getenv('REDIS_PWD', '123456')
     _redis_url = "redis://:{pwd}@{host}:{port}/{db}". \
         format(pwd=REDIS_PWD, host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB)
+
+
+    SCHEDULER_JOBSTORES = {
+        'default': SQLAlchemyJobStore(url=SQLALCHEMY_DATABASE_URI)
+    }
+    # SCHEDULER_EXECUTORS = {
+    #     'default': {'type': 'threadpool', 'max_workers': 20}
+    # }
+    #
+    # SCHEDULER_JOB_DEFAULTS = {
+    #     'coalesce': False,
+    #     'max_instances': 3
+    # }
+
+    SCHEDULER_API_ENABLED = True if int(os.getenv('RUN_JOB',0))==0 else False
+    print(SCHEDULER_API_ENABLED)
 
 
 
