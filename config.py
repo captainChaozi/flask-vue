@@ -61,7 +61,6 @@ class Config:
     # }
 
     SCHEDULER_API_ENABLED = True if int(os.getenv('RUN_JOB',0))==0 else False
-    print(SCHEDULER_API_ENABLED)
 
 
 
